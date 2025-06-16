@@ -1,0 +1,35 @@
+name: AI Twitter Bot
+
+on:
+  schedule:
+    # Run 3 times daily: 9 AM, 2 PM, 7 PM UTC
+    - cron: '0 9 * * *'   # 9:00 AM UTC
+    - cron: '0 14 * * *'  # 2:00 PM UTC  
+    - cron: '0 19 * * *'  # 7:00 PM UTC
+  workflow_dispatch: # Allows manual run
+
+jobs:
+  post-tweet:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        pip install tweepy requests schedule
+        
+    - name: Run Twitter Bot
+      env:
+        API_KEY: ${{ secrets.API_KEY }}
+        API_SECRET: ${{ secrets.API_SECRET }}
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+        BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+      run: python bot.py
